@@ -1,4 +1,55 @@
-# Быстрый старт для Windows
+# Быстрый старт
+
+## Ubuntu / Linux
+
+1. **Установить Docker и Compose**
+
+   ```bash
+   sudo apt update
+   sudo apt install -y docker.io docker-compose-plugin
+   sudo usermod -aG docker $USER
+   newgrp docker
+   ```
+
+2. **Клонировать репозиторий**
+
+   ```bash
+   git clone https://github.com/kirillrub108/SAFU.git
+   cd SAFU
+   ```
+
+3. **Собрать и запустить контейнеры**
+
+   ```bash
+   docker compose up --build -d
+   ```
+
+4. **Прогнать миграции и сиды**
+
+   ```bash
+   docker compose exec backend alembic upgrade head
+   docker compose exec backend python -m app.seeds.main
+   ```
+
+5. **Проверить статус**
+
+   ```bash
+   docker compose ps
+   ```
+
+   Backend: `http://localhost:8000`, frontend: `http://localhost:5173`.
+
+6. **Остановить при необходимости**
+
+   ```bash
+   docker compose down
+   ```
+
+Если после шага 3 API пустое — убедитесь, что миграции и сиды отработали. Для диагностики используйте `docker compose logs backend` или `docker compose logs db`.
+
+---
+
+## Быстрый старт для Windows
 
 ## Предварительные требования
 - Docker Desktop для Windows
@@ -47,7 +98,7 @@ docker compose exec backend python -m app.seeds.main
 
 ## Полезные команды
 
-```powershell
+```powershell 
 # Просмотр логов
 docker compose logs -f
 
