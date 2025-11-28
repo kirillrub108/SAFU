@@ -41,13 +41,13 @@ export default function EventCard({ event, onClick }: EventCardProps) {
       title={hasConflict ? '⚠️ Конфликт расписания: пересекающиеся пары' : undefined}
     >
       {/* Заголовок с дисциплиной */}
-      <div className="font-bold text-base mb-2 flex items-center gap-2" style={{ color }}>
+      <div className="font-bold text-sm md:text-base mb-2 flex items-center gap-2" style={{ color }}>
         {hasConflict && <span className="text-red-600 text-lg">⚠️</span>}
-        <span className="break-words">{event.discipline?.name || 'Дисциплина'}</span>
+        <span className="break-words leading-tight">{event.discipline?.name || 'Дисциплина'}</span>
       </div>
       
       {/* Вид занятия */}
-      <div className="text-gray-700 text-sm mb-2 font-medium">
+      <div className="text-gray-700 text-xs md:text-sm mb-2 font-medium leading-tight">
         {event.work_kind?.name || ''}
       </div>
       
@@ -62,20 +62,29 @@ export default function EventCard({ event, onClick }: EventCardProps) {
       
       {/* Аудитория */}
       {event.room && (
-        <div className="text-gray-700 text-sm mb-2 flex items-center gap-1">
+        <div
+          className="text-gray-700 text-xs md:text-sm mb-2 flex items-center gap-1 w-full whitespace-nowrap overflow-hidden text-ellipsis"
+          title={
+            event.room.building
+              ? `Ауд. ${event.room.number} (${event.room.building.name})`
+              : `Ауд. ${event.room.number}`
+          }
+        >
           <span className="font-semibold">📍</span>
-          <span className="font-medium">Ауд. {event.room.number}</span>
+          <span className="font-semibold shrink-0">Ауд. {event.room.number}</span>
           {event.room.building && (
-            <span className="text-gray-500 text-xs">({event.room.building.name})</span>
+            <span className="text-gray-500 text-[11px] md:text-xs truncate">
+              ({event.room.building.name})
+            </span>
           )}
         </div>
       )}
       
       {/* Преподаватели */}
       {event.lecturers && event.lecturers.length > 0 && (
-        <div className="text-gray-600 text-sm mb-2">
-          <span className="font-semibold">👤</span>{' '}
-          <span className="break-words">
+        <div className="text-gray-600 text-xs md:text-sm mb-2 flex items-start gap-1">
+          <span className="font-semibold shrink-0 leading-tight">👤</span>
+          <span className="break-words leading-tight">
             {event.lecturers.map((l) => l.fio).join(', ')}
           </span>
         </div>

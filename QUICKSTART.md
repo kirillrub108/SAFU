@@ -98,7 +98,7 @@ docker compose exec backend python -m app.seeds.main
 
 ## Полезные команды
 
-```powershell 
+```powershell  п
 # Просмотр логов
 docker compose logs -f
 
