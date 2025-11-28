@@ -1,0 +1,100 @@
+services:
+  db:
+    image: postgres:16
+    container_name: safu_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-safu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-safu_password}
+      POSTGRES_DB: ${POSTGRES_DB:-safu_timetable}
+      TZ: ${TZ:-Europe/Moscow}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-safu}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - safu_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: safu_redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - safu_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: safu_backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-safu}:${POSTGRES_PASSWORD:-safu_password}@db:5432/${POSTGRES_DB:-safu_timetable}
+      REDIS_URL: redis://redis:6379/0
+      TZ: ${TZ:-Europe/Moscow}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - safu_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: safu_frontend
+    environment:
+      VITE_API_URL: http://localhost:${BACKEND_PORT:-8000}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    command: npm run dev -- --host 0.0.0.0
+    networks:
+      - safu_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: safu_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@safu.ru}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - safu_network
+
+networks:
+  safu_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
