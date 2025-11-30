@@ -1,15 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api, EventDetail, Lecturer } from '../lib/api'
 import ScheduleGrid from '../components/ScheduleGrid'
 import WeekSelector from '../components/WeekSelector'
+import FiltersBar from '../components/FiltersBar'
 import { useFiltersStore } from '../store/filters'
 import { logger } from '../utils/logger'
 
 export default function TimetableLecturer() {
   const { id } = useParams<{ id: string }>()
   const filters = useFiltersStore()
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Устанавливаем текущую неделю и преподавателя при загрузке
   useEffect(() => {
@@ -71,14 +73,18 @@ export default function TimetableLecturer() {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <h1 className="text-3xl font-bold mb-2">
         Расписание преподавателя
       </h1>
       {lecturer && (
         <p className="text-gray-600 mb-6">{lecturer.fio}</p>
       )}
-      <WeekSelector />
+      <WeekSelector 
+        onFiltersToggle={() => setFiltersOpen(!filtersOpen)}
+        filtersOpen={filtersOpen}
+      />
+      <FiltersBar isOpen={filtersOpen} />
       
       {isFetching && events && (
         <div className="mb-4 text-sm text-blue-600 bg-blue-50 p-2 rounded">

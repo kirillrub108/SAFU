@@ -7,6 +7,7 @@ class GroupBase(BaseModel):
     code: str
     name: str
     year: Optional[int] = None
+    faculty_id: Optional[int] = None
     active: bool = True
 
 

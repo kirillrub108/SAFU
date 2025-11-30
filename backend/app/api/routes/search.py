@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Dict, Any
 from app.db.session import get_db
-from app.models import Lecturer, Discipline, Room, Building
+from app.models import Lecturer, Discipline, Room, Building, Group
 
 router = APIRouter(prefix="/api/search", tags=["search"])
 
@@ -19,6 +19,7 @@ def search(q: str = Query(..., min_length=2), db: Session = Depends(get_db)):
         "disciplines": [],
         "rooms": [],
         "buildings": [],
+        "groups": [],
     }
 
     # Поиск преподавателей
@@ -84,6 +85,28 @@ def search(q: str = Query(..., min_length=2), db: Session = Depends(get_db)):
             "address": b.address,
         }
         for b in buildings
+    ]
+
+    # Поиск групп
+    groups = (
+        db.query(Group)
+        .filter(
+            or_(
+                Group.code.ilike(f"%{q}%"),
+                Group.name.ilike(f"%{q}%"),
+            ),
+            Group.active == True,
+        )
+        .limit(10)
+        .all()
+    )
+    results["groups"] = [
+        {
+            "id": g.id,
+            "code": g.code,
+            "name": g.name,
+        }
+        for g in groups
     ]
 
     return results

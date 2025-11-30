@@ -13,8 +13,10 @@ class Group(Base):
     code = Column(String, unique=True, nullable=False, index=True)
     name = Column(String, nullable=False)
     year = Column(Integer, nullable=True)
+    faculty_id = Column(Integer, ForeignKey("faculties.id"), nullable=True, index=True)
     active = Column(Boolean, default=True, nullable=False)
 
+    faculty = relationship("Faculty", back_populates="groups")
     subgroups = relationship("Subgroup", back_populates="group")
 
 

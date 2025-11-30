@@ -15,6 +15,18 @@ def get_lecturers(db: Session = Depends(get_db)):
     return db.query(LecturerModel).filter(LecturerModel.active == True).all()
 
 
+@router.get("/chairs")
+def get_chairs(db: Session = Depends(get_db)):
+    """Получить список кафедр."""
+    chairs = (
+        db.query(LecturerModel.chair)
+        .filter(LecturerModel.chair.isnot(None), LecturerModel.active == True)
+        .distinct()
+        .all()
+    )
+    return {"chairs": [chair[0] for chair in chairs if chair[0]]}
+
+
 @router.post("", response_model=Lecturer)
 def create_lecturer(lecturer: LecturerCreate, db: Session = Depends(get_db)):
     """Создать преподавателя."""

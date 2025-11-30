@@ -2,6 +2,7 @@
 from app.db.session import SessionLocal
 from app.seeds.buildings import seed_buildings
 from app.seeds.rooms import seed_rooms
+from app.seeds.faculties import seed_faculties
 from app.seeds.lecturers import seed_lecturers
 from app.seeds.groups import seed_groups
 from app.seeds.streams import seed_streams
@@ -14,6 +15,10 @@ def main():
     """Заполнение БД."""
     db = SessionLocal()
     try:
+        print("Заполнение факультетов...")
+        faculties = seed_faculties(db)
+        print(f"Создано факультетов: {len(faculties)}")
+
         print("Заполнение корпусов...")
         buildings = seed_buildings(db)
         print(f"Создано корпусов: {len(buildings)}")
@@ -35,7 +40,7 @@ def main():
         print(f"Создано преподавателей: {len(lecturers)}")
 
         print("Заполнение групп...")
-        groups = seed_groups(db)
+        groups = seed_groups(db, faculties)
         print(f"Создано групп: {len(groups)}")
 
         print("Заполнение потоков...")

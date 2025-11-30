@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTimetable } from '../hooks/useTimetable'
 import ScheduleGrid from '../components/ScheduleGrid'
 import FiltersBar from '../components/FiltersBar'
@@ -10,6 +10,7 @@ import { logger } from '../utils/logger'
 export default function Timetable() {
   const filters = useFiltersStore()
   const initializedRef = useRef(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   
   // Устанавливаем текущую неделю при первой загрузке
   useEffect(() => {
@@ -77,10 +78,13 @@ export default function Timetable() {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Расписание</h1>
-      <WeekSelector />
-      <FiltersBar />
+      <WeekSelector 
+        onFiltersToggle={() => setFiltersOpen(!filtersOpen)}
+        filtersOpen={filtersOpen}
+      />
+      <FiltersBar isOpen={filtersOpen} />
       <DebugInfo events={events} />
       
       {isFetching && events && (
@@ -96,7 +100,9 @@ export default function Timetable() {
             <span className="font-semibold">{filters.dateFrom}</span> -{' '}
             <span className="font-semibold">{filters.dateTo}</span>
           </div>
-          <ScheduleGrid events={events} weekStart={filters.weekDate} />
+          <div className="w-full overflow-x-hidden">
+            <ScheduleGrid events={events} weekStart={filters.weekDate} />
+          </div>
         </>
       ) : !isLoading ? (
         <div className="text-center py-6 md:py-8 text-gray-500 bg-white rounded-lg shadow p-4 md:p-6">

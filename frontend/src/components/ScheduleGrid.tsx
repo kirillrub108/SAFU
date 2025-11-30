@@ -95,20 +95,26 @@ export default function ScheduleGrid({ events, weekStart }: ScheduleGridProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse">
+    <div className="bg-white rounded-lg shadow overflow-hidden w-full">
+      <div className="w-full overflow-hidden">
+        <table className="w-full border-collapse" style={{ tableLayout: 'fixed', width: '100%' }}>
+          <colgroup>
+            <col style={{ width: '60px' }} />
+            {days.map((day, index) => (
+              <col key={`day-col-${index}`} />
+            ))}
+          </colgroup>
           <thead>
             <tr>
-              <th className="border p-3 bg-gray-100 font-semibold text-center min-w-[60px]">
-                Пара
+              <th className="border p-2 bg-gray-100 font-semibold text-center w-16">
+                <div className="text-sm">Пара</div>
               </th>
               {days.map((day) => {
                 const isCurrentDay = isToday(day)
                 return (
                   <th
                     key={day.toISOString()}
-                    className={`border p-3 bg-gray-100 min-w-[150px] ${
+                    className={`border p-2 bg-gray-100 ${
                       isCurrentDay ? 'bg-blue-50 border-blue-300' : ''
                     }`}
                   >
@@ -124,7 +130,7 @@ export default function ScheduleGrid({ events, weekStart }: ScheduleGridProps) {
                         {format(day, 'd.MM')}
                       </div>
                       {isCurrentDay && (
-                        <div className="text-xs text-blue-600 font-medium mt-1">
+                        <div className="text-xs text-blue-600 font-medium mt-0.5">
                           Сегодня
                         </div>
                       )}
@@ -139,10 +145,10 @@ export default function ScheduleGrid({ events, weekStart }: ScheduleGridProps) {
               const pairTime = PAIR_TIMES[pair]
               return (
                 <tr key={pair} className="hover:bg-gray-50">
-                  <td className="border p-3 text-center font-semibold bg-gray-50 align-top">
-                    <div className="text-lg">{pair}</div>
+                  <td className="border p-1.5 text-center font-semibold bg-gray-50 align-top w-16">
+                    <div className="text-base font-bold">{pair}</div>
                     {pairTime && (
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-gray-500 mt-0.5 leading-tight">
                         {pairTime.start}
                         <br />
                         {pairTime.end}
@@ -155,17 +161,18 @@ export default function ScheduleGrid({ events, weekStart }: ScheduleGridProps) {
                     return (
                       <td
                         key={day.toISOString()}
-                        className={`border p-2 align-top min-h-[100px] ${
+                        className={`border p-1.5 align-top ${
                           isCurrentDay ? 'bg-blue-50' : ''
                         }`}
+                        style={{ minHeight: '80px' }}
                       >
-                        <div className="space-y-2">
+                        <div className="space-y-1.5 h-full">
                           {dayEvents.length > 0 ? (
                             dayEvents.map((event) => (
                               <EventCard key={event.id} event={event} />
                             ))
                           ) : (
-                            <div className="text-xs text-gray-400 text-center py-2">
+                            <div className="text-xs text-gray-400 text-center py-1">
                               —
                             </div>
                           )}

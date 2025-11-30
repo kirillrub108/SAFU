@@ -8,8 +8,12 @@ interface DebugInfoProps {
 export default function DebugInfo({ events }: DebugInfoProps) {
   const filters = useFiltersStore()
   
-  // Показываем только в development
-  if (import.meta.env.PROD) {
+  // Показываем только для разработчиков
+  const userStr = localStorage.getItem('user')
+  const user = userStr ? JSON.parse(userStr) : null
+  const isDeveloper = user?.role === 'developer'
+  
+  if (!isDeveloper) {
     return null
   }
 

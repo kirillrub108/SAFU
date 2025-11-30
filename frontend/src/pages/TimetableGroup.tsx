@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api, EventDetail, Group } from '../lib/api'
 import ScheduleGrid from '../components/ScheduleGrid'
 import WeekSelector from '../components/WeekSelector'
+import FiltersBar from '../components/FiltersBar'
 import DebugInfo from '../components/DebugInfo'
 import { useFiltersStore } from '../store/filters'
 import { logger } from '../utils/logger'
@@ -13,6 +14,7 @@ export default function TimetableGroup() {
   const navigate = useNavigate()
   const filters = useFiltersStore()
   const initializedRef = useRef(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Проверяем наличие id
   useEffect(() => {
@@ -167,7 +169,7 @@ export default function TimetableGroup() {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <h1 className="text-3xl font-bold mb-2">
         Расписание группы {group?.code || id || 'неизвестно'}
       </h1>
@@ -177,7 +179,11 @@ export default function TimetableGroup() {
       {!group && id && (
         <p className="text-yellow-600 mb-6">Загрузка информации о группе...</p>
       )}
-      <WeekSelector />
+      <WeekSelector 
+        onFiltersToggle={() => setFiltersOpen(!filtersOpen)}
+        filtersOpen={filtersOpen}
+      />
+      <FiltersBar isOpen={filtersOpen} />
       <DebugInfo events={events} />
       
       {isFetching && events && (

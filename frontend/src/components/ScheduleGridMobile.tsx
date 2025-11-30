@@ -66,7 +66,7 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {days.map((day) => {
         const dayEvents = getEventsForDay(day)
         const isCurrentDay = isToday(day)
@@ -76,7 +76,7 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
         return (
           <div
             key={day.toISOString()}
-            className={`bg-white rounded-lg shadow-sm border-2 overflow-hidden ${
+            className={`bg-white rounded-lg shadow-sm border-2 overflow-hidden w-full ${
               isCurrentDay ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
             }`}
           >
@@ -90,11 +90,11 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-lg">
+                  <div className="font-bold text-xl">
                     {DAY_NAMES[dayOfWeek]}
                   </div>
                   <div
-                    className={`text-sm ${
+                    className={`text-base ${
                       isCurrentDay ? 'text-blue-100' : 'text-gray-600'
                     }`}
                   >
@@ -102,13 +102,13 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
                   </div>
                 </div>
                 {isCurrentDay && (
-                  <div className="px-3 py-1 bg-white text-blue-600 rounded-full text-xs font-semibold">
+                  <div className="px-3 py-1 bg-white text-blue-600 rounded-full text-sm font-semibold">
                     Сегодня
                   </div>
                 )}
                 {dayEvents.length > 0 && (
                   <div
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
                       isCurrentDay
                         ? 'bg-white text-blue-600'
                         : 'bg-blue-100 text-blue-700'
@@ -129,15 +129,15 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
                     const pairTime = PAIR_TIMES[pairNumber]
                     
                     return (
-                      <div key={event.id} className="flex gap-3">
+                      <div key={event.id} className="flex gap-2 w-full">
                         {/* Время пары слева */}
-                        <div className="flex-shrink-0 w-20 text-center">
+                        <div className="flex-shrink-0 w-16 text-center">
                           <div className="bg-gray-100 rounded-lg p-2">
-                            <div className="font-bold text-lg text-gray-800">
+                            <div className="font-bold text-base text-gray-800">
                               {pairNumber}
                             </div>
                             {pairTime && (
-                              <div className="text-xs text-gray-600 mt-1">
+                              <div className="text-xs text-gray-600 mt-0.5 leading-tight">
                                 <div>{pairTime.start}</div>
                                 <div className="text-gray-400">-</div>
                                 <div>{pairTime.end}</div>
@@ -147,7 +147,7 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
                         </div>
                         
                         {/* Карточка события */}
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 w-full">
                           <EventCard event={event} />
                         </div>
                       </div>
@@ -157,7 +157,7 @@ export default function ScheduleGridMobile({ events, weekStart }: ScheduleGridMo
               ) : (
                 <div className="text-center py-8 text-gray-400">
                   <div className="text-4xl mb-2">📅</div>
-                  <div className="text-sm">Нет занятий</div>
+                  <div className="text-base">Нет занятий</div>
                 </div>
               )}
             </div>

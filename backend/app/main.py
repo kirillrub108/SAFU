@@ -16,6 +16,10 @@ from app.api.routes import (
     calendar,
     import_route,
     search,
+    auth,
+    favorites,
+    notifications,
+    faculties,
 )
 
 app = FastAPI(
@@ -46,9 +50,11 @@ else:
     )
 
 # Подключение роутов
+app.include_router(auth.router)
 app.include_router(buildings.router)
 app.include_router(rooms.router)
 app.include_router(lecturers.router)
+app.include_router(faculties.router)
 app.include_router(groups.router)
 app.include_router(streams.router)
 app.include_router(disciplines.router)
@@ -59,6 +65,8 @@ app.include_router(history.router)
 app.include_router(calendar.router)
 app.include_router(import_route.router)
 app.include_router(search.router)
+app.include_router(favorites.router)
+app.include_router(notifications.router)
 
 
 @app.get("/")

@@ -11,6 +11,15 @@ export const api = axios.create({
   timeout: 30000, // 30 секунд таймаут
 })
 
+// Добавляем токен в заголовки, если он есть
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 // Добавляем перехватчик для логирования запросов
 api.interceptors.request.use(
   (config) => {

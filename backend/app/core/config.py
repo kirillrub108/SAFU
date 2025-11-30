@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     # Admin
     ADMIN_ENABLED: bool = True
 
+    # JWT
+    SECRET_KEY: str = "your-secret-key-change-in-production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 дней
+
     class Config:
         env_file = ".env"
         case_sensitive = True
